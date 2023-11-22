@@ -50,7 +50,9 @@ function App() {
       0
     );
 
-    setGpa(totalGrade / totalCredit);
+    const gpa = totalGrade / totalCredit;
+    setGpa(gpa);
+    document.title = `GPA: ${gpa}`;
   }
 
   function handleAdd() {
