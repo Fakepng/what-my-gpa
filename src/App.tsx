@@ -106,10 +106,14 @@ function App() {
             <thead>
               <tr>
                 <th>
-                  <label htmlFor="credits">Credits</label>
+                  <label htmlFor="credits" className="text-2xl">
+                    Credits
+                  </label>
                 </th>
                 <th>
-                  <label htmlFor="grade">Grade</label>
+                  <label htmlFor="grade" className="text-2xl">
+                    Grade
+                  </label>
                 </th>
                 <th>
                   <button
@@ -118,7 +122,7 @@ function App() {
                     disabled={!credits.length}
                   >
                     <Icon
-                      path={!credits.length ? mdiDelete : mdiDeleteSweep}
+                      path={!credits.length ? mdiDeleteEmpty : mdiDeleteSweep}
                       size={1}
                     />
                   </button>
@@ -143,7 +147,7 @@ function App() {
               <tr>
                 <td>
                   <select
-                    className="select w-full max-w-xs"
+                    className="select w-full max-w-xs text-lg"
                     onChange={handleCredit}
                   >
                     <option disabled selected>
@@ -158,7 +162,7 @@ function App() {
                 </td>
                 <td>
                   <select
-                    className="select w-full max-w-xs"
+                    className="select w-full max-w-xs text-lg"
                     onChange={handleGrade}
                   >
                     <option disabled selected>
