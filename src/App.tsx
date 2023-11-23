@@ -8,6 +8,7 @@ function App() {
   const creditSchema = z.object({
     grade: z.string().regex(/^[A-D][+-]?|F$/),
     credits: z.number().int().min(1).max(4),
+    note: z.optional(z.string()),
   });
 
   const creditsSchema = z.array(creditSchema);
@@ -29,6 +30,7 @@ function App() {
   const [credits, setCredits] = useState<CreditsSchema>([]);
   const [grade, setGrade] = useState<keyof typeof gradeValue | null>(null);
   const [credit, setCredit] = useState<number | null>(null);
+  const [note, setNote] = useState<string>("");
 
   function handleGrade(event: ChangeEvent<HTMLSelectElement>) {
     const grade = event.target.value as keyof typeof gradeValue;
@@ -64,11 +66,13 @@ function App() {
     if (!grade) return;
     if (!credit) return;
 
-    const currCredits = [...credits, { grade, credits: credit }];
+    const currCredits = [...credits, { grade, credits: credit, note }];
     setCredits(() => currCredits);
 
     calculateGpa(currCredits);
     localStorage.setItem("credits", JSON.stringify(currCredits));
+
+    setNote("");
   }
 
   function handleRemove(index: number) {
@@ -85,6 +89,11 @@ function App() {
     setCredits(() => []);
     calculateGpa([]);
     localStorage.removeItem("credits");
+  }
+
+  function handleNote(event: ChangeEvent<HTMLInputElement>) {
+    const note = event.target.value;
+    setNote(note);
   }
 
   useEffect(() => {
@@ -105,6 +114,11 @@ function App() {
           <table className="table table-lg text-center">
             <thead>
               <tr>
+                <th>
+                  <label htmlFor="note" className="text-2xl">
+                    Note
+                  </label>
+                </th>
                 <th>
                   <label htmlFor="credits" className="text-2xl">
                     Credits
@@ -132,6 +146,7 @@ function App() {
             <tbody>
               {credits.map((credit, index) => (
                 <tr key={index}>
+                  <td>{credit.note}</td>
                   <td>{credit.credits}</td>
                   <td>{credit.grade}</td>
                   <td>
@@ -145,6 +160,15 @@ function App() {
                 </tr>
               ))}
               <tr>
+                <td>
+                  <input
+                    type="text"
+                    placeholder="Note"
+                    className="input w-full max-w-xs"
+                    value={note}
+                    onChange={handleNote}
+                  />
+                </td>
                 <td>
                   <select
                     className="select w-full max-w-xs text-lg"
@@ -184,7 +208,7 @@ function App() {
             </tbody>
           </table>
         </div>
-        <h3 className="text-3xl pt-10">Your GPA is {gpa}</h3>
+        <h3 className="text-3xl py-10">Your GPA is {gpa}</h3>
       </main>
     </>
   );
