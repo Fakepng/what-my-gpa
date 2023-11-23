@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { z } from "zod";
 import Icon from "@mdi/react";
-import { mdiPlus, mdiDeleteEmpty } from "@mdi/js";
+import { mdiPlus, mdiDelete, mdiDeleteEmpty, mdiDeleteSweep } from "@mdi/js";
 import "./App.css";
 
 function App() {
@@ -41,7 +41,11 @@ function App() {
   }
 
   function calculateGpa(credits: CreditsSchema) {
-    if (credits.length === 0) return setGpa(0);
+    if (credits.length === 0) {
+      setGpa(0);
+      document.title = "What my GPA";
+      return;
+    }
 
     const totalCredit = credits.reduce((prev, curr) => prev + curr.credits, 0);
     const totalGrade = credits.reduce(
@@ -52,6 +56,7 @@ function App() {
 
     const gpa = totalGrade / totalCredit;
     setGpa(gpa);
+
     document.title = `GPA: ${gpa}`;
   }
 
@@ -74,6 +79,12 @@ function App() {
     calculateGpa(currCredits);
 
     localStorage.setItem("credits", JSON.stringify(currCredits));
+  }
+
+  function handleRemoveAll() {
+    setCredits(() => []);
+    calculateGpa([]);
+    localStorage.removeItem("credits");
   }
 
   useEffect(() => {
@@ -100,7 +111,18 @@ function App() {
                 <th>
                   <label htmlFor="grade">Grade</label>
                 </th>
-                <th></th>
+                <th>
+                  <button
+                    className="btn btn-error"
+                    onClick={handleRemoveAll}
+                    disabled={!credits.length}
+                  >
+                    <Icon
+                      path={!credits.length ? mdiDelete : mdiDeleteSweep}
+                      size={1}
+                    />
+                  </button>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -113,7 +135,7 @@ function App() {
                       className="btn btn-error"
                       onClick={() => handleRemove(index)}
                     >
-                      <Icon path={mdiDeleteEmpty} size={1} />
+                      <Icon path={mdiDelete} size={1} />
                     </button>
                   </td>
                 </tr>
