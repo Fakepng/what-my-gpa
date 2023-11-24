@@ -42,6 +42,14 @@ function App() {
     setCredit(credit);
   }
 
+  function round(val: number, decimals: number) {
+    return +(
+      Math.round(+(val.toFixed(decimals) + "e+" + decimals)) +
+      "e-" +
+      decimals
+    );
+  }
+
   function calculateGpa(credits: CreditsSchema) {
     if (credits.length === 0) {
       setGpa(0);
@@ -56,7 +64,7 @@ function App() {
       0
     );
 
-    const gpa = totalGrade / totalCredit;
+    const gpa = round(totalGrade / totalCredit, 2);
     setGpa(gpa);
 
     document.title = `GPA: ${gpa}`;
