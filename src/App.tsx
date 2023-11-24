@@ -31,6 +31,7 @@ function App() {
   const [grade, setGrade] = useState<keyof typeof gradeValue | null>(null);
   const [credit, setCredit] = useState<number | null>(null);
   const [note, setNote] = useState<string>("");
+  const [isHover, setIsHover] = useState<boolean>(false);
 
   function handleGrade(event: ChangeEvent<HTMLSelectElement>) {
     const grade = event.target.value as keyof typeof gradeValue;
@@ -64,10 +65,10 @@ function App() {
       0
     );
 
-    const gpa = round(totalGrade / totalCredit, 2);
+    const gpa = totalGrade / totalCredit;
     setGpa(gpa);
 
-    document.title = `GPA: ${gpa}`;
+    document.title = `GPA: ${round(gpa, 2)}`;
   }
 
   function handleAdd() {
@@ -216,7 +217,13 @@ function App() {
             </tbody>
           </table>
         </div>
-        <h3 className="text-3xl py-10">Your GPA is {gpa}</h3>
+        <h3
+          className="text-3xl my-10"
+          onMouseEnter={() => setIsHover(true)}
+          onMouseLeave={() => setIsHover(false)}
+        >
+          Your GPA is {isHover ? gpa : round(gpa, 2)}
+        </h3>
       </main>
     </>
   );
