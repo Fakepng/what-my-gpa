@@ -1,4 +1,5 @@
 import { ChangeEvent, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { z } from "zod";
 import Icon from "@mdi/react";
 import { mdiPlus, mdiDelete, mdiDeleteEmpty, mdiDeleteSweep } from "@mdi/js";
@@ -32,6 +33,10 @@ function App() {
   const [credit, setCredit] = useState<number | null>(null);
   const [note, setNote] = useState<string>("");
   const [isHover, setIsHover] = useState<boolean>(false);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const searchCredits = searchParams.get("credits");
 
   function handleGrade(event: ChangeEvent<HTMLSelectElement>) {
     const grade = event.target.value as keyof typeof gradeValue;
@@ -106,12 +111,26 @@ function App() {
   }
 
   useEffect(() => {
-    const credits = JSON.parse(localStorage.getItem("credits") || "[]");
+    if (searchCredits) {
+      const credits = JSON.parse(searchCredits);
+      const parsed = creditsSchema.safeParse(credits);
+
+      if (parsed.success) {
+        setCredits(() => parsed.data);
+        calculateGpa(parsed.data);
+
+        return;
+      }
+    }
+
+    const creditsString = localStorage.getItem("credits") || "";
+    const credits = JSON.parse(creditsString || "[]");
     const parsed = creditsSchema.safeParse(credits);
 
     if (parsed.success) {
       setCredits(() => parsed.data);
       calculateGpa(parsed.data);
+      setSearchParams({ credits: creditsString });
     }
   }, []);
 
