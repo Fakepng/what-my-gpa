@@ -80,7 +80,7 @@ function App() {
     if (!grade) return;
     if (!credit) return;
 
-    const currCredits = [...credits, { grade, credits: credit, note }];
+    const currCredits = [{ grade, credits: credit, note }, ...credits];
     setCredits(() => currCredits);
 
     calculateGpa(currCredits);
@@ -138,6 +138,13 @@ function App() {
     <>
       <main className="container text-center">
         <h1 className="text-3xl font-bold py-10">What my GPA</h1>
+        <h3
+          className="text-3xl mb-10"
+          onMouseEnter={() => setIsHover(true)}
+          onMouseLeave={() => setIsHover(false)}
+        >
+          Your GPA is {isHover ? gpa : round(gpa, 2)}
+        </h3>
         <div className="overflow-x-auto">
           <table className="table table-lg text-center">
             <thead>
@@ -172,34 +179,20 @@ function App() {
               </tr>
             </thead>
             <tbody>
-              {credits.map((credit, index) => (
-                <tr key={index}>
-                  <td>{credit.note}</td>
-                  <td>{credit.credits}</td>
-                  <td>{credit.grade}</td>
-                  <td>
-                    <button
-                      className="btn btn-error"
-                      onClick={() => handleRemove(index)}
-                    >
-                      <Icon path={mdiDelete} size={1} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
               <tr>
                 <td>
                   <input
                     type="text"
                     placeholder="Note"
-                    className="input w-full max-w-xs"
+                    className="input w-full max-w-xs text-center"
                     value={note}
                     onChange={handleNote}
                   />
                 </td>
+
                 <td>
                   <select
-                    className="select w-full max-w-xs text-lg"
+                    className="select max-w-xs text-lg"
                     onChange={handleCredit}
                   >
                     <option disabled selected>
@@ -214,7 +207,7 @@ function App() {
                 </td>
                 <td>
                   <select
-                    className="select w-full max-w-xs text-lg"
+                    className="select max-w-xs text-lg"
                     onChange={handleGrade}
                   >
                     <option disabled selected>
@@ -233,6 +226,21 @@ function App() {
                   </button>
                 </td>
               </tr>
+              {credits.map((credit, index) => (
+                <tr key={index}>
+                  <td>{credit.note}</td>
+                  <td>{credit.credits}</td>
+                  <td>{credit.grade}</td>
+                  <td>
+                    <button
+                      className="btn btn-error"
+                      onClick={() => handleRemove(index)}
+                    >
+                      <Icon path={mdiDelete} size={1} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
